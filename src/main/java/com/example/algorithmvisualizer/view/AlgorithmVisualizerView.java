@@ -5,8 +5,10 @@ import com.example.algorithmvisualizer.controller.AlgorithmVisualizerControllerI
 import com.example.algorithmvisualizer.model.AlgorithmVisualizerModelInterface;
 import com.example.algorithmvisualizer.model.NodeArrayObserver;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.Arrays;
 
@@ -35,20 +38,17 @@ public class AlgorithmVisualizerView implements NodeArrayObserver {
     private static Button resetButton;
     private static String selectedAlgorithm;
     private static AnimationTimer timer;
-    private static final int gapBetweenNodes = 8;
     private static final ObservableList<String> sortingAlgorithms =
-            FXCollections.observableArrayList(Arrays.asList("Selection Sort", "Bubble Sort", "Other Sort", "Other Sort", "Other Sort", "Other Sort"));
+            FXCollections.observableArrayList(Arrays.asList("Selection Sort", "Bubble Sort", "Insertion Sort", "Merge Sort", "Quick Sort", "Heap Sort"));
 
 
     public AlgorithmVisualizerView(AlgorithmVisualizerControllerInterface controller, AlgorithmVisualizerModelInterface model, Stage stage) {
         this.controller = controller;
         this.model = model;
-        model.registerObserver(this);
+        this.model.registerObserver(this);
         nodeArray = model.getArray();
 
-
         setupView();
-
 
         scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setTitle("Algorithm Visualizer");
@@ -56,16 +56,13 @@ public class AlgorithmVisualizerView implements NodeArrayObserver {
         stage.show();
     }
 
-
     private void setupView() {
         root = new BorderPane();
         nodeGroup = new Group();
         buttonsBox = new FlowPane();
 
-
-        //working on...
-
         setRoot();
+
         timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -75,18 +72,12 @@ public class AlgorithmVisualizerView implements NodeArrayObserver {
     }
 
     private void setRoot() {
+        root.setStyle("-fx-background-color: black");
         setButtons();
         redraw();
-        root.setStyle("-fx-background-color: black");
+
         root.setTop(nodeGroup);
         root.setBottom(buttonsBox);
-    }
-
-    public static void redraw() {
-        nodeGroup.getChildren().clear();
-        for(Node n : nodeArray) {
-            nodeGroup.getChildren().add(n);
-        }
     }
 
     private void setButtons() {
@@ -124,21 +115,18 @@ public class AlgorithmVisualizerView implements NodeArrayObserver {
             redraw();
         });
 
-
         buttonsBox.getChildren().addAll(sortButton, sortSelectionBox, resetButton);
     }
 
-
-
+    //overridden from nodeArrayObserver interface
     @Override
     public void updateArray() {
-        Node[] aux = model.getArray();
-        int x = 0;
-        for(int i = 0; i < aux.length; i++) {
-            aux[i].setX(x);
-            nodeArray[i] = aux[i];
-            x += gapBetweenNodes;
-        }
+        nodeArray = model.getArray();
+    }
+
+    public static void redraw() {
+        nodeGroup.getChildren().clear();
+        nodeGroup.getChildren().addAll(nodeArray);
     }
 
     public static int getWindowWidth() {

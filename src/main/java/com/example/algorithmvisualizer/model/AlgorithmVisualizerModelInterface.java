@@ -8,10 +8,12 @@ public interface AlgorithmVisualizerModelInterface {
     void initialize();
     void sort(String algo);
     void stopSorting();
+
     void randomizeArray();
+    void setArray(Node[] array);
     Node[] getArray();
     boolean arrayIsSorted();
-    void setArray(Node[] array);
+
     void registerObserver(NodeArrayObserver o);
     void removeObserver(NodeArrayObserver o);
     void notifyObservers();

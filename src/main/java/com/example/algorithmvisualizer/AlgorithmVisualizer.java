@@ -6,7 +6,7 @@ import com.example.algorithmvisualizer.controller.AlgorithmVisualizerController;
 import com.example.algorithmvisualizer.model.AlgorithmVisualizerModel;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import java.io.IOException;
+
 
 public class AlgorithmVisualizer extends Application {
 
@@ -20,6 +20,11 @@ public class AlgorithmVisualizer extends Application {
         AlgorithmVisualizerControllerInterface controller = new AlgorithmVisualizerController(model, stage);
     }
 
-
+    //makes sure that all threads are terminated when application is closed
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        System.exit(0);
+    }
 
 }

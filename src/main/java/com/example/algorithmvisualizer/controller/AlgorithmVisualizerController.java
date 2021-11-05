@@ -11,9 +11,10 @@ public class AlgorithmVisualizerController implements AlgorithmVisualizerControl
 
 
     public AlgorithmVisualizerController(AlgorithmVisualizerModelInterface model, Stage stage) {
+        //initialize model and view
         this.model = model;
-        model.initialize();
-        this.view = new AlgorithmVisualizerView(this, model, stage);
+        this.model.initialize();
+        this.view = new AlgorithmVisualizerView(this, this.model, stage);
     }
 
     @Override
@@ -26,6 +27,7 @@ public class AlgorithmVisualizerController implements AlgorithmVisualizerControl
 
     @Override
     public void reset() {
+        //stops sorting and resets the node array
         model.stopSorting();
         model.randomizeArray();
     }

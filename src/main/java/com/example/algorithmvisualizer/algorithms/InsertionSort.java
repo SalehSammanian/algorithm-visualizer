@@ -3,14 +3,12 @@ package com.example.algorithmvisualizer.algorithms;
 import com.example.algorithmvisualizer.Node;
 import com.example.algorithmvisualizer.model.AlgorithmVisualizerModelInterface;
 
-
-public class SelectionSort implements SortingAlgorithmInterface{
+public class InsertionSort implements SortingAlgorithmInterface{
 
     private Node[] nodeArray;
     private AlgorithmVisualizerModelInterface model;
 
-
-    public SelectionSort (AlgorithmVisualizerModelInterface model) {
+    public InsertionSort (AlgorithmVisualizerModelInterface model) {
         this.model = model;
         this.nodeArray = model.getArray();
     }
@@ -18,11 +16,10 @@ public class SelectionSort implements SortingAlgorithmInterface{
     @Override
     public void sort() {
         int n = nodeArray.length;
-        for(int i = 0; i < n; i++) {
-            int min = i;
-            nodeArray[min].setSelected(true);
-            for(int j = i+1; j < n; j++) {
-                nodeArray[j].setBeingCompared(true);
+        for (int i = 1; i < n; i++) {
+            for (int j = i; j > 0; j--) {
+                nodeArray[j].setSelected(true);
+                nodeArray[j-1].setBeingCompared(true);
 
                 try {
                     Thread.sleep(18);
@@ -30,30 +27,35 @@ public class SelectionSort implements SortingAlgorithmInterface{
                     return;
                 }
 
-                if(less(nodeArray[j], nodeArray[min])) {
-                    nodeArray[min].setSelected(false);
+                if (less(nodeArray[j], nodeArray[j-1])) {
+                    nodeArray[j-1].setBeingCompared(false);
+                    nodeArray[j-1].setSorted(true);
 
-                    min = j;
-                    nodeArray[j].setBeingCompared(false);
-                    nodeArray[j].setSelected(true);
+                    if(j-1 == 0) {
+                        nodeArray[j].setSelected(false);
+                        nodeArray[j].setSorted(true);
+                    }
+
+                    exch(nodeArray, j, j-1);
                 } else {
-                    nodeArray[j].setBeingCompared(false);
+                    nodeArray[j-1].setBeingCompared(false);
+                    nodeArray[j-1].setSorted(true);
+                    nodeArray[j].setSelected(false);
+                    nodeArray[j].setSorted(true);
+                    break;
                 }
             }
-            exchange(nodeArray , i , min);
-            nodeArray[i].setSelected(false);
-            nodeArray[i].setSorted(true);
         }
     }
 
 
-    //node v is less than w if its height it's shorter
+
     private boolean less(Node v, Node w) {
         return v.compareTo(w) < 0;
     }
 
     //swaps nodes
-    private void exchange(Node[] a, int i, int j) {
+    private void exch(Node[] a, int i, int j) {
         Node swap = a[i];
         a[i] = a[j];
         a[j] = swap;
@@ -66,5 +68,4 @@ public class SelectionSort implements SortingAlgorithmInterface{
         this.nodeArray = model.getArray();
         sort();
     }
-
 }

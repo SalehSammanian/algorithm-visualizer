@@ -1,21 +1,22 @@
 package com.example.algorithmvisualizer.model;
 
+import com.example.algorithmvisualizer.algorithms.*;
 import com.example.algorithmvisualizer.view.AlgorithmVisualizerView;
 import com.example.algorithmvisualizer.Node;
-import com.example.algorithmvisualizer.algorithms.SelectionSort;
-import com.example.algorithmvisualizer.algorithms.SortingAlgorithmInterface;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class AlgorithmVisualizerModel implements AlgorithmVisualizerModelInterface{
+
     private static Map<String, SortingAlgorithmInterface> sortingAlgorithms;
     private static Thread sortingThread;
     private static SortingAlgorithmInterface algorithm;
     private static int numOfElements;
     private static Node[] nodeArray;
-    private static final int gapBetweenNodes = 8;
+    private static final int gapBetweenNodes = 6;
     private ArrayList<NodeArrayObserver> observers = new ArrayList<>();
 
 
@@ -26,7 +27,7 @@ public class AlgorithmVisualizerModel implements AlgorithmVisualizerModelInterfa
     @Override
     public void initialize() {
         //initializing array of nodes
-        numOfElements = AlgorithmVisualizerView.getWindowWidth() / 8;
+        numOfElements = AlgorithmVisualizerView.getWindowWidth() / gapBetweenNodes;
         nodeArray = new Node[numOfElements];
         randomizeArray();
 
@@ -56,6 +57,7 @@ public class AlgorithmVisualizerModel implements AlgorithmVisualizerModelInterfa
 
     @Override
     public void stopSorting() {
+        //interrupts the sorting thread which terminates it
         if(sortingThread.isAlive()) {
             sortingThread.interrupt();
         }
@@ -110,6 +112,11 @@ public class AlgorithmVisualizerModel implements AlgorithmVisualizerModelInterfa
     private void initializeSortingAlgorithms() {
         sortingAlgorithms = new HashMap<>();
         sortingAlgorithms.put("Selection Sort", new SelectionSort(this));
+        sortingAlgorithms.put("Bubble Sort", new BubbleSort(this));
+        sortingAlgorithms.put("Insertion Sort", new InsertionSort(this));
+        sortingAlgorithms.put("Merge Sort", new MergeSort(this));
+        sortingAlgorithms.put("Quick Sort", new QuickSort(this));
+        sortingAlgorithms.put("Heap Sort", new HeapSort(this));
     }
 
     @Override

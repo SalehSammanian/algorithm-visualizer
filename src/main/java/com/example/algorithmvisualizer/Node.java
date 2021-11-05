@@ -14,9 +14,9 @@ public class Node extends Rectangle implements Comparable<Node> {
     private static final double y = 0;
     private static final Color defaultColor = Color.WHITE;
 
-    //flags to identify if a node is selected or is the minimum node(node changes color based on these flags)
+    //flags to identify if a node is selected,being compared or is a sorted node(node changes color based on these flags)
+    private boolean isBeingCompared;
     private boolean isSelected;
-    private boolean isMin;
     private boolean isSorted;
 
 
@@ -24,12 +24,13 @@ public class Node extends Rectangle implements Comparable<Node> {
        //first initialize rectangle node with default width, height, y
        super(x, y , defaultNodeWidth, defaultNodeHeight);
 
-       //override default height with random height, set coilor to white
+       //override default height with random height, set color to white
        this.setHeight(random.nextInt(500) + 1);
        this.setFill(defaultColor);
 
+       this.isBeingCompared = false;
        this.isSelected = false;
-       this.isMin = false;
+       this.isSorted = false;
     }
 
 
@@ -40,16 +41,6 @@ public class Node extends Rectangle implements Comparable<Node> {
         return Double.compare(this.getHeight(), n.getHeight());
     }
 
-    public static double getNodeWidth() {
-        return defaultNodeWidth;
-    }
-
-
-
-    public static double getDefaultNodeHeight() {
-        return defaultNodeHeight;
-    }
-
     @Override
     public String toString() {
         return "Node{" +
@@ -57,30 +48,38 @@ public class Node extends Rectangle implements Comparable<Node> {
                 '}';
     }
 
+    public boolean isBeingCompared() {
+        return isBeingCompared;
+    }
+
+    public void setBeingCompared(boolean beingCompared) {
+        isBeingCompared = beingCompared;
+        if(isBeingCompared) {
+            this.setFill(Color.GREEN);
+        } else if (isSelected) {
+            this.setFill(Color.RED);
+        } else if(isSorted) {
+            this.setFill(Color.CYAN);
+        } else {
+            this.setFill(defaultColor);
+        }
+    }
+
     public boolean isSelected() {
         return isSelected;
     }
 
+
     public void setSelected(boolean selected) {
         isSelected = selected;
         if(isSelected) {
-            this.setFill(Color.GREEN);
-        } else {
-            this.setFill(Color.WHITE);
-        }
-    }
-
-    public boolean isMin() {
-        return isMin;
-    }
-
-
-    public void setMin(boolean min) {
-        isMin = min;
-        if(isMin) {
             this.setFill(Color.RED);
+        } else if (isBeingCompared) {
+            this.setFill(Color.GREEN);
+        } else if(isSorted) {
+            this.setFill(Color.CYAN);
         } else {
-            this.setFill(Color.WHITE);
+            this.setFill(defaultColor);
         }
     }
 
@@ -92,6 +91,12 @@ public class Node extends Rectangle implements Comparable<Node> {
         isSorted = sorted;
         if(isSorted) {
             this.setFill(Color.CYAN);
+        } else if (isBeingCompared) {
+            this.setFill(Color.GREEN);
+        } else if(isSelected) {
+            this.setFill(Color.RED);
+        } else {
+            this.setFill(defaultColor);
         }
     }
 }
